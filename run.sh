@@ -6,5 +6,6 @@ set -e
 echo running program:
 echo --------------- 
 echo --------------- 
+echo
 
-./build/output/main_exe
+./build/bin/main_exe

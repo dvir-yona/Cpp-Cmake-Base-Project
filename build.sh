@@ -10,11 +10,14 @@ cd "$(dirname "$0")" || {
 
 echo "Current working directory: \"$(pwd)\""
 
-cd ./build/
+cd ./build/ || {
+  mkdir build
+  cd build
+}
 
 # Configure CMake with Ninja generator
 cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. || {
-    echo "CMake config failed. Check the output above for errors."
+    echo "CMake config failed. Check the output above for errors, you may need to install ninja."
     read -p "Press any key to continue..."
     exit 1
 }

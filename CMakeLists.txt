@@ -7,12 +7,10 @@ add_executable(main_exe src/main.cpp)
 set(Target_Build "${CMAKE_BINARY_DIR}/build")
 file(MAKE_DIRECTORY "${Target_Build}")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 set(Target_Install "${CMAKE_BINARY_DIR}/install")
 file(MAKE_DIRECTORY "${Target_Install}")
 
-set(Target_Output "${CMAKE_BINARY_DIR}/output")
+set(Target_Output "${CMAKE_BINARY_DIR}/bin")
 file(MAKE_DIRECTORY "${Target_Output}")
 
 set_target_properties(main_exe PROPERTIES
@@ -23,9 +21,3 @@ set_target_properties(main_exe PROPERTIES
 set_target_properties(main_exe PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${Target_Output}"
 )
-
-#external libraries
-include(FetchContent)
-
-target_compile_options(main_exe PRIVATE "-mavx" "-march=native")
-
