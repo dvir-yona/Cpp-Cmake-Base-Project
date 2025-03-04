@@ -90,5 +90,9 @@ echo running program:
 echo --------------- 
 echo --------------- 
 echo
-
-$([ "$debug" == "true" ] && echo lldb) ./build/bin/main_exe
+      
+if [ "$debug" == "true" ]; then
+  lldb ./build/bin/exe
+else
+  exec ./build/bin/exe
+fi
