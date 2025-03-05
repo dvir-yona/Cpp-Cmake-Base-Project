@@ -24,3 +24,12 @@ set_target_properties(Project_exe PROPERTIES
 set_target_properties(Project_exe PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${Target_Output}"
 )
+
+Set(FETCHCONTENT_QUIET FALSE)
+
+#FetchContent_Declare(
+# someTarget
+# GIT_REPOSITORY "https://github.com/someone/someTarget.git"
+# GIT_TAG "tag"
+#  GIT_PROGRESS TRUE
+#)
