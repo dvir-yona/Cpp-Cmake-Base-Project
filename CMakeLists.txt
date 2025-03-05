@@ -4,7 +4,7 @@ project(Project)
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 message(STATUS "Source files found: ${SOURCE_FILES}")
 
-add_executable(exe ${SOURCE_FILES})
+add_executable(Project_exe ${SOURCE_FILES})
 
 # target paths
 set(Target_Build "${CMAKE_BINARY_DIR}/build")
@@ -16,11 +16,11 @@ file(MAKE_DIRECTORY "${Target_Install}")
 set(Target_Output "${CMAKE_BINARY_DIR}/bin")
 file(MAKE_DIRECTORY "${Target_Output}")
 
-set_target_properties(exe PROPERTIES
+set_target_properties(Project_exe PROPERTIES
     BUILD_RPATH "${Target_Build}"
     INSTALL_RPATH "${Target_Install}"
 )
 
-set_target_properties(exe PROPERTIES
+set_target_properties(Project_exe PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${Target_Output}"
 )
