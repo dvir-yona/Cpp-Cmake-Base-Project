@@ -25,8 +25,8 @@ set_target_properties(Project_exe PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${Target_Output}"
 )
 
-include(FetchContent)
-Set(FETCHCONTENT_QUIET FALSE)
+#include(FetchContent)
+#Set(FETCHCONTENT_QUIET FALSE)
 
 #FetchContent_Declare(
 # someTarget
