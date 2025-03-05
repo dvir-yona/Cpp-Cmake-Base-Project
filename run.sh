@@ -1,98 +1,82 @@
 #!/bin/bash
 set -e
 
+terminal_width=$(tput cols)
+
+if [[ $? -ne 0 ]]; then
+  terminal_width=80
+  echo "Warning: Could not determine terminal width. Defaulting to 80." >&2
+fi
+
+print_sperator() {
+  local hyphens=""
+  for ((i=0; i<terminal_width; i++)); do
+    hyphens+="-"
+  done
+
+  echo "$hyphens"
+}
+
 #cmd args
-debug=false
+release=false
+lldb=false
 clang=false
 
 if [ "$#" -gt 0 ]; then
   for arg in "$@"; do
-    if [ "$arg" = "-D" ]; then
-      debug=true
-      echo "debug enabled"
+    if [ "$arg" = "-R" ]; then
+      release=true
     elif [ "$arg" = "-C" ]; then
       clang=true
+    elif [ "$arg" = "-D" ]; then
+      lldb=true
     fi
   done
 fi
 
-#arg cache
-mkdir -p build
+build_string() {
+  local compiler_str=""
+  local mode_str=""
 
-cache_file="build/.cache_file"
-full_rebuild=false
-
-## checking for changes
-if [ -f "$cache_file" ]; then
-  clang_cache=$(grep -E "^clang:" "$cache_file" 2>/dev/null)
-  if [ -n "$clang_cache" ]; then
-    cached_clang_value="${clang_cache#*:}"
-    if [ "$cached_clang_value" != "$clang" ]; then
-      echo "Clang setting changed. Triggering full rebuild."
-      full_rebuild=true
-    fi
+  if [ "${clang}" == "true" ]; then
+    compiler_str="clang"
   else
-    full_rebuild=true
+    compiler_str="gcc"
   fi
 
-  debug_cache=$(grep -E "^debug:" "$cache_file" 2>/dev/null)
-  if [ -n "$debug_cache" ]; then
-    cached_debug_value="${debug_cache#*:}"
-    if [ "$cached_debug_value" != "$debug" ]; then
-      echo "Debug setting changed. Triggering full rebuild."
-      full_rebuild=true
-    fi
+  if [ "$release" == "true" ]; then
+    mode_str="release"
   else
-    full_rebuild=true
+    mode_str="debug"
   fi
-else
-  echo "cache file not found. Triggering full rebuild"
-  full_rebuild=true
+
+  local result_string="${compiler_str}-${mode_str}"
+  echo "$result_string"
+}
+
+preset=$(build_string)
+
+print_sperator
+echo "Configurating with preset $preset"
+print_sperator
+cmake --preset="$preset" .
+
+print_sperator
+echo "Building..."
+print_sperator
+cmake --build --preset="$preset" -j $(nproc)
+
+print_sperator
+RunString="Running Program:"
+if [ "$lldb" == "true" ]; then 
+  RunString="Running Program in LLDB:"
 fi
-
-if [[ "$clang" == "true" ]]; then
-  clang_value_to_cache="true"
-else
-  clang_value_to_cache="false"
-fi
-
-if [ "$full_rebuild" == "true" ]; then
-  echo "Full rebuild triggered"
-fi
-
-#building
-./build.sh $([ "$full_rebuild" == "true" ] && echo -Rebuild) $([ "$debug" == "true" ] && echo "-D") $([ "$clang" == "true" ] && echo "-C")
-
-#Updating cache
-if [ ! -f "$cache_file" ]; then
-  touch "$cache_file"
-fi
-
-if [[ "$clang" == "true" ]]; then
-  clang_value_to_cache="true"
-else
-  clang_value_to_cache="false"
-fi
-
-sed -i "/^clang:/d" "$cache_file" 2>/dev/null
-echo "clang:$clang_value_to_cache" >> "$cache_file"
-
-if [[ "$debug" == "true" ]]; then
-  debug_value_to_cache="true"
-else
-  debug_value_to_cache="false"
-fi
-
-sed -i "/^debug:/d" "$cache_file" 2>/dev/null
-echo "debug:$debug_value_to_cache" >> "$cache_file"
-
-echo running program:
-echo --------------- 
-echo --------------- 
-echo
+echo "$RunString"
+print_sperator
+echo ""
       
-if [ "$debug" == "true" ]; then
-  lldb ./build/bin/exe
+if [ "$lldb" == "true" ]; then
+  lldb "./build/${preset}/bin/Project_exe"
 else
-  exec ./build/bin/exe
+  exec "./build/${preset}/bin/Project_exe"
 fi
