@@ -59,12 +59,34 @@ preset=$(build_string)
 print_sperator
 echo "Configurating with preset $preset"
 print_sperator
-cmake --preset="$preset" .
+build_dir="./build/${preset}"
+hash_file="$build_dir/.cmakelists_hash"
+current_hash=$(md5sum CMakeLists.txt | awk '{print $1}')
+
+if [ ! -d "$build_dir" ]; then
+  echo "Configuring with preset $preset (first time)"
+  mkdir -p "$build_dir"
+  cmake --preset="$preset" .
+  echo "$current_hash" > "$hash_file"
+elif [ ! -f "$hash_file" ]; then
+  echo "Configuring with preset $preset (hash file missing)"
+  cmake --preset="$preset" .
+  echo "$current_hash" > "$hash_file"
+else
+  cached_hash=$(cat "$hash_file")
+  if [ "$cached_hash" != "$current_hash" ]; then
+    echo "Configuring with preset $preset (CMakeLists.txt changed)"
+    cmake --preset="$preset" .
+    echo "$current_hash" > "$hash_file"
+  else
+    echo "Using cached build directory: $build_dir"
+  fi
+fi
 
 print_sperator
 echo "Building..."
 print_sperator
-cmake --build --preset="$preset" -j $(nproc)
+cmake --build --preset="$preset" -j$(nproc)
 
 print_sperator
 RunString="Running Program:"
