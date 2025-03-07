@@ -83,7 +83,7 @@ else
   fi
 fi
 
-ln -sf "$build_dir/compile_commands.json" ./build/
+cp "$build_dir/compile_commands.json" ./build/
 print_sperator
 echo "Building..."
 print_sperator
