@@ -47,3 +47,6 @@ The run.sh script simplifies building and running the project with various optio
 - **CMakeLists.txt**: CMake configuration file.
 - **CMakePresets.json**: Defines build presets for different configurations.
 - **deps.txt**: Lists required dependencies.
+---
+## License
+   This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for full details.
