@@ -91,7 +91,6 @@ if [ ! -d "$build_dir" ]; then
   fi
   echo "Installing dependencies from deps.txt"
   print_separator
-  sudo apt update
   sudo apt install $deps
   print_separator
   echo "Dependencies installed successfully."
@@ -148,7 +147,7 @@ print_separator
 echo ""
       
 if [ "$lldb" == "true" ]; then
-  lldb "./build/${preset}/bin/Project_exe"
+  gdb "./build/${preset}/bin/Project_exe"
 else
   cd "./build/${preset}/"
   exec "./bin/Project_exe"

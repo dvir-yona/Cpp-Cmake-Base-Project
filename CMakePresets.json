@@ -43,7 +43,10 @@
       "displayName": "GCC Debug",
       "description": "Build with GCC in Debug mode",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address",
+        "CMAKE_C_FLAGS": "-fsanitize=address",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address"
       }
     },
     {
@@ -52,7 +55,10 @@
       "displayName": "Clang Debug",
       "description": "Build with Clang in Debug mode",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address",
+        "CMAKE_C_FLAGS": "-fsanitize=address",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address"
       }
     }
   ],
