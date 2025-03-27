@@ -3,3 +3,5 @@ clang
 libomp-dev
 cmake
 ninja-build
+valgrind
+kcachegrind
