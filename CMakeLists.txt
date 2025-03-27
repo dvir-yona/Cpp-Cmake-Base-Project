@@ -6,6 +6,33 @@ message(STATUS "Source files found: ${SOURCE_FILES}")
 
 add_executable(Project_exe ${SOURCE_FILES})
 
+## for the use with FetchContent
+add_library(Project STATIC ${SOURCE_FILES})
+target_include_directories(Project
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
+
+set_target_properties(Project_exe PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+install(TARGETS Project
+    EXPORT ProjectTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY include/ DESTINATION include)
+
+install(EXPORT ProjectTargets
+    FILE ProjectTargets.cmake
+    NAMESPACE Project::
+    DESTINATION lib/cmake/Project
+)
+
 # target paths
 set(Target_Build "${CMAKE_BINARY_DIR}/build")
 file(MAKE_DIRECTORY "${Target_Build}")
